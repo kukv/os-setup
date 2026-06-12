@@ -1,0 +1,19 @@
+---
+- name: "Install japanese language packs"
+  ansible.builtin.apt:
+    name:
+      - "language-pack-ja"
+      - "manpages-ja"
+      - "manpages-ja-dev"
+    state: "present"
+
+- name: "Create locale ja_JP.UTF-8"
+  community.general.locale_gen:
+    name: "ja_JP.UTF-8"
+    state: "present"
+
+- name: "Ensure locale is set to ja_JP.UTF-8"
+  ansible.builtin.lineinfile:
+    path: "/etc/default/locale"
+    regexp: "^LANG='"
+    line: "LANG=ja_JP.UTF-8"

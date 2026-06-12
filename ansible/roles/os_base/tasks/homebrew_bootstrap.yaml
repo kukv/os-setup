@@ -1,0 +1,41 @@
+---
+- name: "Install the packages required for Homebrew installation"
+  become: true
+  ansible.builtin.apt:
+    name:
+      - "build-essential"
+      - "file"
+    state: "present"
+
+- name: "Check if homebrew is already installed"
+  ansible.builtin.stat:
+    path: "{{ brew_bin }}"
+  register: "brew_installed"
+
+- name: "Install homebrew section"
+  when: "not brew_installed.stat.exists"
+  block:
+    - name: "Download installation script"
+      ansible.builtin.get_url:
+        url: "https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh"
+        dest: "{{ tmp_dir }}/brew_install.sh"
+        mode: "0755"
+
+    - name: "Run homebrew installer"
+      ansible.builtin.command:
+        cmd: "{{ tmp_dir }}/brew_install.sh"
+      environment:
+        NONINTERACTIVE: "1"
+      changed_when: true
+
+- name: "Upgrade all packages"
+  community.general.homebrew:
+    update_homebrew: true
+    upgrade_all: true
+
+- name: "Install the packages required by Homebrew itself"
+  community.general.homebrew:
+    name:
+      - "gcc"
+      - "cmake"
+    state: "present"
