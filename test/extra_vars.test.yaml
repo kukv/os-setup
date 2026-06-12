@@ -1,0 +1,10 @@
+---
+# Tart VM テスト用のダミー変数
+# 実際の認証情報は含まないこと
+# GitHub Token は os-setup.env に分離されたためここには含まない
+
+git:
+  user:
+    name: "test-user"
+    email: "test@example.com"
+    signing_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAITestDummyKeyForTartVMTesting"

@@ -7,8 +7,8 @@
     - name: "Validate required variables"
       ansible.builtin.assert:
         that:
-          - git.user.name is defined
-          - git.user.email is defined
+          - "git.user.name is defined"
+          - "git.user.email is defined"
         fail_msg: "git.user.name and git.user.email are required (see extra_vars.yaml.example)"
       tags: ["always"]
 

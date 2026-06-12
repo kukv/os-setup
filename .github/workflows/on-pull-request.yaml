@@ -1,0 +1,47 @@
+---
+name: "on-pull-request"
+
+on:
+  pull_request:
+jobs:
+  check-shell:
+    runs-on: "ubuntu-latest"
+
+    steps:
+      - name: "Checkout Repository"
+        uses: "actions/checkout@v6"
+
+      - name: "Check with shellcheck"
+        uses: "reviewdog/action-shellcheck@v1"
+        with:
+          github_token: "${{ secrets.GITHUB_TOKEN }}"
+          fail_level: "error"
+          reporter: "github-pr-review"
+
+  check-yaml:
+    runs-on: "ubuntu-latest"
+
+    steps:
+      - name: "Checkout Repository"
+        uses: "actions/checkout@v6"
+
+      - name: "Check with yaml"
+        uses: "reviewdog/action-yamllint@v1"
+        with:
+          github_token: "${{ secrets.GITHUB_TOKEN }}"
+          level: "error"
+          fail_level: "error"
+          reporter: "github-pr-review"
+
+  check-ansible:
+    runs-on: "ubuntu-latest"
+
+    steps:
+      - name: "Checkout Repository"
+        uses: "actions/checkout@v6"
+
+      - name: "Check with ansible"
+        uses: "ansible/ansible-lint@main"
+        with:
+          working_directory: "./ansible"
+          requirements_file: "requirements.yaml"
