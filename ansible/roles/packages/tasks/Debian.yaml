@@ -1,0 +1,12 @@
+---
+- name: "Install Ruby build prerequisites"
+  become: true
+  ansible.builtin.apt:
+    name: "{{ ruby_build_packages }}"
+    state: "present"
+
+- name: "Install ARM cross-compile toolchain"
+  become: true
+  ansible.builtin.apt:
+    name: "{{ arm_cross_packages }}"
+    state: "present"

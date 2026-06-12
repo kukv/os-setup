@@ -1,0 +1,10 @@
+---
+- name: "Install common Homebrew tooling (mise, chezmoi)"
+  community.general.homebrew:
+    name:
+      - "mise"
+      - "chezmoi"
+    state: "present"
+
+- name: "Run OS-specific package installation"
+  ansible.builtin.include_tasks: "{{ ansible_os_family }}.yaml"

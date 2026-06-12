@@ -1,0 +1,18 @@
+---
+- name: "Tap third-party Homebrew repositories"
+  community.general.homebrew_tap:
+    name: "cirruslabs/cli"
+    state: "present"
+
+- name: "Install Homebrew formulae"
+  community.general.homebrew:
+    name: "{{ homebrew.formulae }}"
+    state: "present"
+
+- name: "Install Homebrew casks"
+  community.general.homebrew_cask:
+    name: "{{ homebrew.casks }}"
+    state: "present"
+
+- name: "Install Claude Code CLI"
+  ansible.builtin.include_tasks: "claude.yaml"

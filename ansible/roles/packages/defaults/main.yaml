@@ -1,0 +1,45 @@
+---
+# Debian (WSL) — from wsl-setup dev_setup install_prerequisite_packages.yaml / setup_golang.yaml
+ruby_build_packages:
+  - "libssl-dev"
+  - "libyaml-dev"
+  - "zlib1g-dev"
+  - "libgmp-dev"
+  - "libffi-dev"
+  - "autoconf"
+  - "rustc"
+arm_cross_packages:
+  - "qemu-system-arm"        # Required for binary builds for arm
+  - "g++-aarch64-linux-gnu"  # Required for binary builds for arm64
+
+# Darwin (macOS) — from mac-setup homebrew/defaults/main.yaml (chezmoi added)
+homebrew:
+  formulae:
+    - "git"
+    - "mise"
+    - "chezmoi"
+    - "tree"
+    - "nkf"
+    - "ffmpeg"
+    - "plantuml"
+    - "nmap"
+    - "cirruslabs/cli/tart"
+  casks:
+    - "font-hack-nerd-font"
+    - "google-chrome"
+    - "visual-studio-code"
+    - "raycast"
+    - "1password"
+    - "1password-cli"
+    - "jetbrains-toolbox"
+    - "slack"
+    - "notion"
+    - "discord"
+    - "iterm2"
+    - "spotify"
+    - "clipy"
+    - "daisydisk"
+    - "thebrowsercompany-dia"
+    - "onyx"
+    - "raspberry-pi-imager"
+    - "vnc-viewer"
