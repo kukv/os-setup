@@ -1,0 +1,37 @@
+---
+- name: "Create log directory"
+  ansible.builtin.file:
+    path: "{{ scheduled.log_dir }}"
+    state: "directory"
+    mode: "0755"
+
+- name: "Create bin directory"
+  ansible.builtin.file:
+    path: "{{ ansible_facts.user_dir }}/.local/bin"
+    state: "directory"
+    mode: "0755"
+
+- name: "Deploy log rotation script"
+  ansible.builtin.template:
+    src: "log_rotation.sh.j2"
+    dest: "{{ ansible_facts.user_dir }}/.local/bin/os-setup-log-rotation.sh"
+    mode: "0755"
+
+- name: "Deploy log rotation LaunchAgent"
+  ansible.builtin.template:
+    src: "com.kukv.os-setup-log-rotation.plist.j2"
+    dest: "{{ ansible_facts.user_dir }}/Library/LaunchAgents/com.kukv.os-setup-log-rotation.plist"
+    mode: "0644"
+  notify: "Reload log rotation LaunchAgent"
+
+- name: "Check log rotation LaunchAgent is loaded"
+  ansible.builtin.command:
+    cmd: "launchctl list com.kukv.os-setup-log-rotation"
+  register: "log_rotation_loaded"
+  changed_when: false
+  failed_when: false
+
+- name: "Load log rotation LaunchAgent"
+  ansible.builtin.command:
+    cmd: "launchctl bootstrap gui/{{ ansible_facts.user_uid }} {{ ansible_facts.user_dir }}/Library/LaunchAgents/com.kukv.os-setup-log-rotation.plist"
+  when: "log_rotation_loaded.rc != 0"

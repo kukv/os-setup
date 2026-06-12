@@ -1,0 +1,12 @@
+---
+- name: "Create LaunchAgents directory"
+  ansible.builtin.file:
+    path: "{{ ansible_facts.user_dir }}/Library/LaunchAgents"
+    state: "directory"
+    mode: "0755"
+
+- name: "Setup ansible-pull schedule"
+  ansible.builtin.include_tasks: "darwin_setup_schedule.yaml"
+
+- name: "Setup log rotation"
+  ansible.builtin.include_tasks: "darwin_setup_log.yaml"

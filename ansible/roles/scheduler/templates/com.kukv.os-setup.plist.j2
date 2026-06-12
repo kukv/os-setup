@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.kukv.os-setup</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/zsh</string>
+        <string>{{ ansible_facts.user_dir }}/.local/bin/os-setup-pull.sh</string>
+    </array>
+
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+        <key>HOME</key>
+        <string>{{ ansible_facts.user_dir }}</string>
+    </dict>
+
+    <key>StartCalendarInterval</key>
+    <dict>
+        <key>Weekday</key>
+        <integer>{{ scheduled.weekday }}</integer>
+        <key>Hour</key>
+        <integer>{{ scheduled.hour }}</integer>
+        <key>Minute</key>
+        <integer>{{ scheduled.minute }}</integer>
+    </dict>
+
+    <key>StandardOutPath</key>
+    <string>{{ scheduled.log_dir }}/os-setup.log</string>
+
+    <key>StandardErrorPath</key>
+    <string>{{ scheduled.log_dir }}/os-setup.error.log</string>
+
+    <key>RunAtLoad</key>
+    <false/>
+</dict>
+</plist>

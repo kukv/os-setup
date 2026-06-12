@@ -1,0 +1,9 @@
+[Unit]
+Description=Run os-setup provisioning on a schedule
+
+[Timer]
+OnCalendar={{ provisioning_schedule }}
+Persistent=true
+
+[Install]
+WantedBy=timers.target

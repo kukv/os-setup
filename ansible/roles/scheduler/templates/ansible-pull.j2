@@ -1,0 +1,9 @@
+/var/log/ansible/ansible-pull.log {
+    create 0644 {{ ansible_user }} {{ ansible_user }}
+    daily
+    rotate 90
+    compress
+    missingok
+    dateext
+    copytruncate
+}

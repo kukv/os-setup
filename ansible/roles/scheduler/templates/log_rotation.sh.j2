@@ -1,0 +1,8 @@
+#!/bin/zsh
+set -euo pipefail
+# {{ ansible_managed }}
+# Rotate ansible-pull logs older than {{ scheduled.log_retention_days }} days
+
+LOG_DIR="{{ scheduled.log_dir }}"
+
+find "${LOG_DIR}" -name "*.log" -mtime +{{ scheduled.log_retention_days }} -delete
