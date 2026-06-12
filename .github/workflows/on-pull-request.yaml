@@ -17,6 +17,10 @@ jobs:
           github_token: "${{ secrets.GITHUB_TOKEN }}"
           fail_level: "error"
           reporter: "github-pr-review"
+          # test/run-in-vm.sh is a zsh script (shellcheck supports only sh/bash/ksh)
+          exclude: |
+            */.git/*
+            */test/run-in-vm.sh
 
   check-yaml:
     runs-on: "ubuntu-latest"
@@ -40,8 +44,21 @@ jobs:
       - name: "Checkout Repository"
         uses: "actions/checkout@v6"
 
-      - name: "Check with ansible"
-        uses: "ansible/ansible-lint@main"
+      - name: "Set up Python"
+        uses: "actions/setup-python@v5"
         with:
-          working_directory: "./ansible"
-          requirements_file: "requirements.yaml"
+          python-version: "3.x"
+
+      # Install ansible-lint and the required collection into the SAME
+      # environment so ansible-lint's syntax-check can resolve
+      # community.general modules (the ansible-lint action installs them into
+      # a separate env, leaving the collection unresolvable).
+      - name: "Install ansible-lint and collections"
+        run: |
+          python -m pip install --upgrade pip
+          pip install ansible-lint
+          ansible-galaxy collection install -r ansible/requirements.yaml
+
+      - name: "Check with ansible-lint"
+        working-directory: "./ansible"
+        run: "ansible-lint --config-file .ansible-lint"
