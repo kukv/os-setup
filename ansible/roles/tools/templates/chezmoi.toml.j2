@@ -1,0 +1,5 @@
+# Managed by Ansible (os-setup). Seeds chezmoi data for non-interactive apply.
+[data]
+    git_name = "{{ git.user.name }}"
+    git_email = "{{ git.user.email }}"
+    git_signing_key = "{{ git.user.signing_key | default('') }}"
