@@ -1,0 +1,20 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "timezone": "Asia/Tokyo",
+  "schedule": ["before 9am on saturday"],
+  "labels": ["dependencies", "renovate"],
+  "prConcurrentLimit": 0,
+  "prHourlyLimit": 0,
+  "separateMinorPatch": true,
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": ["before 9am on saturday"]
+  },
+  "minimumReleaseAge": "7 days",
+  "automerge": true,
+  "major": {
+    "minimumReleaseAge": "14 days",
+    "automerge": false
+  }
+}
