@@ -1,0 +1,18 @@
+---
+# Copy to the location ansible-pull reads and fill in your values:
+#   WSL/Linux : /etc/ansible/extra_vars.yaml
+#   macOS     : ~/.local/etc/extra_vars.yaml
+
+# Git identity (flows into chezmoi data -> ~/.gitconfig via kukv/dotfiles)
+git:
+  user:
+    name: "Your Name"
+    email: "you@example.com"
+    # SSH signing public key (macOS / 1Password SSH Agent). Leave empty on WSL.
+    signing_key: ""
+
+# GitHub token for mise (raises GitHub API rate limits while mise fetches tools).
+#   WSL/Linux : set it here (this file is passed via --extra-vars "@file").
+#   macOS     : DO NOT set it here. Put it in ~/.local/etc/os-setup.env instead
+#               (see os-setup.env.example) so it is never exposed via ps/argv.
+github_token: ""
