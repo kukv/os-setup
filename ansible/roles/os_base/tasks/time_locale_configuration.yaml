@@ -1,0 +1,15 @@
+---
+- name: "Setup NTP"
+  ansible.builtin.blockinfile:
+    path: "/etc/systemd/timesyncd.conf"
+    block: |
+      NTP=ntp1.jst.mfeed.ad.jp ntp2.jst.mfeed.ad.jp ntp3.jst.mfeed.ad.jp
+    marker: "# {mark} NTP SETUP"
+    create: true
+    prepend_newline: true
+    mode: "0644"
+  notify: "Restart systemd-timesyncd"
+
+- name: "Set timezone to Asia/Tokyo"
+  community.general.timezone:
+    name: "Asia/Tokyo"

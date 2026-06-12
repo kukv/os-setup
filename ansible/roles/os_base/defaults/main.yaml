@@ -1,0 +1,14 @@
+---
+requirement_packages:
+  - "acl"
+  - "apt-transport-https"
+  - "bzip2"
+  - "ca-certificates"
+  - "curl"
+  - "gnupg"
+  - "lsb-release"
+  - "software-properties-common"
+  - "sshpass"
+  - "tree"
+  - "unzip"
+  - "zip"

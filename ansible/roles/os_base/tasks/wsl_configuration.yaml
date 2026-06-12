@@ -1,0 +1,14 @@
+---
+- name: "Install requirement packages"
+  ansible.builtin.apt:
+    name:
+      - "wslu"
+    state: "present"
+
+- name: "Create /etc/wsl.conf"
+  ansible.builtin.template:
+    src: "wsl.conf.j2"
+    dest: "/etc/wsl.conf"
+    owner: "root"
+    group: "root"
+    mode: "0644"

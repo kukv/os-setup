@@ -1,0 +1,35 @@
+---
+# --- Debian (systemd) ---
+- name: "Reload systemd"
+  become: true
+  ansible.builtin.systemd:
+    daemon_reload: true
+
+# --- Darwin (launchd LaunchAgents) ---
+- name: "Bootout ansible-pull LaunchAgent"
+  ansible.builtin.command:
+    cmd: "launchctl bootout gui/{{ ansible_facts.user_uid }}/com.kukv.os-setup"
+  register: "bootout_result"
+  failed_when: "bootout_result.rc != 0 and bootout_result.rc != 3"
+  changed_when: "bootout_result.rc == 0"
+  listen: "Reload ansible-pull LaunchAgent"
+
+- name: "Load ansible-pull LaunchAgent"
+  ansible.builtin.command:
+    cmd: "launchctl bootstrap gui/{{ ansible_facts.user_uid }} {{ ansible_facts.user_dir }}/Library/LaunchAgents/com.kukv.os-setup.plist"
+  changed_when: true
+  listen: "Reload ansible-pull LaunchAgent"
+
+- name: "Bootout log rotation LaunchAgent"
+  ansible.builtin.command:
+    cmd: "launchctl bootout gui/{{ ansible_facts.user_uid }}/com.kukv.os-setup-log-rotation"
+  register: "bootout_log_result"
+  failed_when: "bootout_log_result.rc != 0 and bootout_log_result.rc != 3"
+  changed_when: "bootout_log_result.rc == 0"
+  listen: "Reload log rotation LaunchAgent"
+
+- name: "Load log rotation LaunchAgent"
+  ansible.builtin.command:
+    cmd: "launchctl bootstrap gui/{{ ansible_facts.user_uid }} {{ ansible_facts.user_dir }}/Library/LaunchAgents/com.kukv.os-setup-log-rotation.plist"
+  changed_when: true
+  listen: "Reload log rotation LaunchAgent"

@@ -1,0 +1,25 @@
+---
+- name: "Check if Claude Code is installed"
+  ansible.builtin.command:
+    cmd: "which claude"
+  register: "claude_check"
+  changed_when: false
+  failed_when: false
+
+- name: "Download Claude Code install script"
+  ansible.builtin.get_url:
+    url: "https://claude.ai/install.sh"
+    dest: "/tmp/claude_install.sh"
+    mode: "0755"
+  when: "claude_check.rc != 0"
+
+- name: "Install Claude Code"
+  ansible.builtin.command:
+    cmd: "zsh /tmp/claude_install.sh"
+  when: "claude_check.rc != 0"
+
+- name: "Remove Claude Code install script"
+  ansible.builtin.file:
+    path: "/tmp/claude_install.sh"
+    state: "absent"
+  when: "claude_check.rc != 0"

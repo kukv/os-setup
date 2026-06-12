@@ -1,0 +1,16 @@
+---
+- name: "Create log directory"
+  ansible.builtin.file:
+    path: "/var/log/ansible"
+    state: "directory"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: "0755"
+
+- name: "Configure logrotate"
+  ansible.builtin.template:
+    src: "ansible-pull.j2"
+    dest: "/etc/logrotate.d/ansible-pull"
+    owner: "root"
+    group: "root"
+    mode: "0644"

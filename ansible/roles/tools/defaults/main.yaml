@@ -1,0 +1,5 @@
+---
+dotfiles_repo_url: "https://github.com/kukv/dotfiles.git"
+go:
+  default_packages:
+    - "golang.org/x/tools/cmd/godoc@latest"

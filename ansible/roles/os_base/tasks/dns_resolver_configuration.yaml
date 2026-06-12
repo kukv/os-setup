@@ -1,0 +1,12 @@
+---
+- name: "Setup DNS resolver"
+  ansible.builtin.blockinfile:
+    path: "/etc/systemd/resolved.conf"
+    block: |
+      DNS=8.8.8.8 1.1.1.1
+      FallbackDNS=8.8.4.4 1.0.0.1
+    marker: "# {mark} DNS SETUP"
+    create: true
+    prepend_newline: true
+    mode: "0644"
+  notify: "Restart systemd-resolved"

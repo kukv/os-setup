@@ -1,0 +1,6 @@
+---
+- name: "Install Ansible Galaxy collections"
+  ansible.builtin.command:
+    cmd: "ansible-galaxy collection install -r {{ playbook_dir }}/requirements.yaml"
+  register: "galaxy_install"
+  changed_when: "'was installed successfully' in galaxy_install.stdout"

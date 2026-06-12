@@ -1,0 +1,19 @@
+.ansible/
+docker/mock/etc/ansible/extra_vars.yaml
+
+# macOS
+.DS_Store
+
+# Ansible
+*.retry
+
+# Extra vars / secrets (never commit)
+extra_vars.yaml
+os-setup.env
+
+# jetbrains
+.idea/
+*.iml
+
+# Poetry
+.venv/

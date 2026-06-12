@@ -1,0 +1,6 @@
+---
+# .ansible-lint
+skip_list:
+  - "no-changed-when"
+  - "var-naming"
+  - "risky-shell-pipe"
