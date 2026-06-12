@@ -1,29 +1,26 @@
 ---
-- name: "Install requirement system packages"
+- name: "Configure OS base (privileged)"
   become: true
-  ansible.builtin.apt:
-    name: "{{ requirement_packages }}"
-    state: "present"
+  block:
+    - name: "Install requirement system packages"
+      ansible.builtin.apt:
+        name: "{{ requirement_packages }}"
+        state: "present"
 
-- name: "Configure WSL"
-  become: true
-  ansible.builtin.include_tasks: "wsl_configuration.yaml"
+    - name: "Configure WSL"
+      ansible.builtin.include_tasks: "wsl_configuration.yaml"
 
-- name: "Configure language locale"
-  become: true
-  ansible.builtin.include_tasks: "lang_locale_configuration.yaml"
+    - name: "Configure language locale"
+      ansible.builtin.include_tasks: "lang_locale_configuration.yaml"
 
-- name: "Configure time locale"
-  become: true
-  ansible.builtin.include_tasks: "time_locale_configuration.yaml"
+    - name: "Configure time locale"
+      ansible.builtin.include_tasks: "time_locale_configuration.yaml"
 
-- name: "Configure DNS resolver"
-  become: true
-  ansible.builtin.include_tasks: "dns_resolver_configuration.yaml"
+    - name: "Configure DNS resolver"
+      ansible.builtin.include_tasks: "dns_resolver_configuration.yaml"
 
-- name: "Change default terminal to zsh"
-  become: true
-  ansible.builtin.include_tasks: "change_default_terminal.yaml"
+    - name: "Change default terminal to zsh"
+      ansible.builtin.include_tasks: "change_default_terminal.yaml"
 
 - name: "Install Homebrew (Linux)"
   ansible.builtin.include_tasks: "homebrew_bootstrap.yaml"
