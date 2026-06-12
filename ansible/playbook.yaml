@@ -1,0 +1,27 @@
+---
+- name: "Unified WSL/macOS setup"
+  hosts: "localhost"
+  gather_facts: true
+
+  pre_tasks:
+    - name: "Validate required variables"
+      ansible.builtin.assert:
+        that:
+          - git.user.name is defined
+          - git.user.email is defined
+        fail_msg: "git.user.name and git.user.email are required (see extra_vars.yaml.example)"
+      tags: ["always"]
+
+    - name: "Initialize Ansible collections"
+      ansible.builtin.include_tasks: "tasks/requirement_ansible_module.yaml"
+      tags: ["always"]
+
+  roles:
+    - role: "os_base"
+      tags: ["os_base"]
+    - role: "packages"
+      tags: ["packages"]
+    - role: "tools"
+      tags: ["tools"]
+    - role: "scheduler"
+      tags: ["scheduler"]
