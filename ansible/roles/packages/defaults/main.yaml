@@ -23,6 +23,8 @@ homebrew:
     - "ffmpeg"
     - "plantuml"
     - "nmap"
+    - "gnupg"
+    - "mas"
     - "cirruslabs/cli/tart"
   casks:
     - "font-hack-nerd-font"
@@ -43,3 +45,20 @@ homebrew:
     - "onyx"
     - "raspberry-pi-imager"
     - "vnc-viewer"
+    - "drawio"
+    - "docker-desktop"
+    - "zoom"
+    - "linear"
+    - "cloudflare-warp"
+    - "onedrive"
+    - "logi-options+"
+    - "microsoft-office"
+
+# Mac App Store apps installed via `mas` (requires App Store sign-in)
+mas_apps:
+  - id: "539883307"
+    name: "LINE"
+  - id: "302584613"
+    name: "Amazon Kindle"
+  - id: "497799835"
+    name: "Xcode"
