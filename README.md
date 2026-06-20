@@ -17,9 +17,11 @@ os-setup は **OS 設定 + ツール導入 + オーケストレーション + �
 - **開発ツール**
   - `mise`（言語・CLI ツール一式）/ `chezmoi`（dotfiles 適用）
   - WSL: Ruby ビルド依存、ARM クロスコンパイル toolchain
-  - macOS: Homebrew formulae / casks（GUI アプリ含む）、Claude Code CLI
-- **dotfiles 適用** — `chezmoi` で `kukv/dotfiles` を展開（mise の設定・zsh・git 等）
+  - macOS: Homebrew formulae / casks（GUI アプリ含む）、Mac App Store アプリ（`mas`）、Claude Code CLI
+- **dotfiles 適用** — `chezmoi` で `kukv/dotfiles` を展開（mise の設定・zsh・git・Claude/Codex 設定 等）
 - **定期プロビジョニング** — `ansible-pull` を WSL は systemd timer、macOS は launchd で定期実行
+
+> **手動管理（自動化対象外）のアプリ**: LocalStack Desktop は Homebrew cask / Mac App Store のいずれでも配布されていないため、必要に応じて手動でインストールする。
 
 ---
 
