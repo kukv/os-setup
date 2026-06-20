@@ -5,6 +5,7 @@ requirement_packages:
   - "bzip2"
   - "ca-certificates"
   - "curl"
+  - "dnsutils"
   - "gnupg"
   - "lsb-release"
   - "software-properties-common"
