@@ -4,9 +4,3 @@
   ansible.builtin.service:
     name: "systemd-resolved"
     state: "restarted"
-
-- name: "Restart systemd-timesyncd"
-  become: true
-  ansible.builtin.service:
-    name: "systemd-timesyncd"
-    state: "restarted"
