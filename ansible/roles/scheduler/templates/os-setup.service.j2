@@ -7,7 +7,7 @@ User={{ ansible_user }}
 Group={{ ansible_user }}
 WorkingDirectory=/home/{{ ansible_user }}
 Environment="ANSIBLE_LOG_PATH=/var/log/ansible/ansible-pull.log"
-ExecStart=/usr/bin/ansible-pull -U https://github.com/kukv/os-setup.git -C main -i ansible/inventories/hosts.yaml ansible/playbook.yaml --extra-vars "@/etc/ansible/extra_vars.yaml" --extra-vars "ansible_user={{ ansible_user }}"
+ExecStart=/usr/bin/ansible-pull -U https://github.com/kukv/os-setup.git -C main -i ansible/inventories/hosts.yaml --limit localhost ansible/playbook.yaml --extra-vars "@/etc/ansible/extra_vars.yaml" --extra-vars "ansible_user={{ ansible_user }}"
 
 [Install]
 WantedBy=multi-user.target

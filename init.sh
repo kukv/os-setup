@@ -53,6 +53,7 @@ if [[ "$OS" == "Darwin" ]]; then
   PYTHONUNBUFFERED=1 ansible-pull \
     --url "${REPO_URL}" --checkout "${BRANCH}" \
     --inventory ansible/inventories/hosts.yaml \
+    --limit localhost \
     "${EXTRA_VARS_OPTS[@]}" \
     ansible/playbook.yaml
 
@@ -76,5 +77,5 @@ else
   apt autoremove -y
 
   sudo -u "${OP_USER}" bash -c \
-    "/usr/bin/ansible-pull -U ${REPO_URL} -C ${BRANCH} -i ansible/inventories/hosts.yaml ansible/playbook.yaml --extra-vars '@/etc/ansible/extra_vars.yaml' --extra-vars 'ansible_user=${OP_USER}'"
+    "/usr/bin/ansible-pull -U ${REPO_URL} -C ${BRANCH} -i ansible/inventories/hosts.yaml --limit localhost ansible/playbook.yaml --extra-vars '@/etc/ansible/extra_vars.yaml' --extra-vars 'ansible_user=${OP_USER}'"
 fi

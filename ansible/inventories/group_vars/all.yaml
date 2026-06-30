@@ -1,5 +1,5 @@
 ---
 tmp_dir: "/tmp"
 # Homebrew bin dir (OS-specific; referenced by tools/packages roles)
-brew_bin_dir: "{{ '/opt/homebrew/bin' if ansible_os_family == 'Darwin' else '/home/linuxbrew/.linuxbrew/bin' }}"
+brew_bin_dir: "{{ '/opt/homebrew/bin' if ansible_facts.os_family == 'Darwin' else '/home/linuxbrew/.linuxbrew/bin' }}"
 brew_bin: "{{ brew_bin_dir }}/brew"

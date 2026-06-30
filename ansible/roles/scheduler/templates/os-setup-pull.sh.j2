@@ -23,6 +23,7 @@ ARGS=(
   --url "{{ scheduled.repo_url }}"
   --checkout "{{ scheduled.branch }}"
   --inventory ansible/inventories/hosts.yaml
+  --limit localhost
 )
 
 if [[ -f "${EXTRA_VARS_FILE}" ]]; then
