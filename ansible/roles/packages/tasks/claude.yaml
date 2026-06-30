@@ -15,7 +15,7 @@
 
 - name: "Install Claude Code"
   ansible.builtin.command:
-    cmd: "zsh /tmp/claude_install.sh"
+    cmd: "bash /tmp/claude_install.sh"
   when: "claude_check.rc != 0"
 
 - name: "Remove Claude Code install script"
