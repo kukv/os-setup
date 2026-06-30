@@ -21,6 +21,3 @@
   loop: "{{ mas_apps }}"
   loop_control:
     label: "{{ item.name }}"
-
-- name: "Install Claude Code CLI"
-  ansible.builtin.include_tasks: "claude.yaml"
