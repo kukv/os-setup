@@ -8,3 +8,6 @@
 
 - name: "Run OS-specific package installation"
   ansible.builtin.include_tasks: "{{ ansible_facts.os_family }}.yaml"
+
+- name: "Install Claude Code CLI"
+  ansible.builtin.include_tasks: "claude.yaml"
