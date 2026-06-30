@@ -4,7 +4,7 @@
     name:
       - "wslu"
     state: "present"
-  when: "ansible_distribution_version is version('26.04', '<')"
+  when: "ansible_facts.distribution_version is version('26.04', '<')"
 
 - name: "Create /etc/wsl.conf"
   ansible.builtin.template:

@@ -7,4 +7,4 @@
     state: "present"
 
 - name: "Run OS-specific package installation"
-  ansible.builtin.include_tasks: "{{ ansible_os_family }}.yaml"
+  ansible.builtin.include_tasks: "{{ ansible_facts.os_family }}.yaml"

@@ -15,7 +15,7 @@
   ansible.builtin.command:
     cmd: "{{ brew_bin_dir }}/chezmoi init --apply {{ dotfiles_repo_url }}"
   environment:
-    PATH: "{{ brew_bin_dir }}:{{ ansible_env.PATH }}"
+    PATH: "{{ brew_bin_dir }}:{{ ansible_facts.env.PATH }}"
   register: "chezmoi_apply"
   changed_when: "chezmoi_apply.rc == 0"
 
@@ -23,7 +23,7 @@
   ansible.builtin.command:
     cmd: "{{ brew_bin_dir }}/mise install --yes"
   environment:
-    PATH: "{{ brew_bin_dir }}:{{ ansible_env.PATH }}"
+    PATH: "{{ brew_bin_dir }}:{{ ansible_facts.env.PATH }}"
     MISE_FETCH_REMOTE_VERSIONS_TIMEOUT: "60"
     MISE_GITHUB_TOKEN: "{{ github_token | default(omit) }}"
   register: "mise_install"
@@ -36,7 +36,7 @@
   ansible.builtin.command:
     cmd: "{{ brew_bin_dir }}/mise exec go -- go install {{ item }}"
   environment:
-    PATH: "{{ brew_bin_dir }}:{{ ansible_env.PATH }}"
+    PATH: "{{ brew_bin_dir }}:{{ ansible_facts.env.PATH }}"
   loop: "{{ go.default_packages }}"
   changed_when: false
 
@@ -44,5 +44,5 @@
   ansible.builtin.command:
     cmd: "{{ brew_bin_dir }}/mise exec node -- corepack enable"
   environment:
-    PATH: "{{ brew_bin_dir }}:{{ ansible_env.PATH }}"
+    PATH: "{{ brew_bin_dir }}:{{ ansible_facts.env.PATH }}"
   changed_when: false
