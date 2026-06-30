@@ -1,33 +1,19 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [ "config:recommended" ],
+  "extends": [
+    "config:recommended",
+    "helpers:pinGitHubActionDigests"
+  ],
   "timezone": "Asia/Tokyo",
-  "labels": [ "dependencies", "renovate" ],
-  "schedule": [ "after 9am on saturday", "before 12am on saturday" ],
+  "schedule": ["before 9am on saturday"],
+  "labels": ["Kind: Dependencies"],
   "prConcurrentLimit": 0,
   "prHourlyLimit": 0,
   "separateMinorPatch": true,
-  "dependencyDashboard": true,
-  "automerge": false,
-  "major": { "minimumReleaseAge": "3 days" },
-  "packageRules": [
-    {
-      "groupName": "Python dependent libraries - minor patch level updates",
-      "depTypeList": [ "python" ],
-      "updateTypes": [ "minor", "patch" ],
-      "automerge": true
-    },
-    {
-      "groupName": "Github actions - minor patch level updates",
-      "depTypeList": [ "github-actions" ],
-      "updateTypes": [ "minor", "patch" ],
-      "automerge": true
-    },
-    {
-      "groupName": "Ansible galaxy - minor patch level updates",
-      "depTypeList": [ "ansible-galaxy" ],
-      "updateTypes": [ "minor", "patch" ],
-      "automerge": true
-    }
-  ]
+  "minimumReleaseAge": "7 days",
+  "automerge": true,
+  "major": {
+    "minimumReleaseAge": "14 days",
+    "automerge": false
+  }
 }
