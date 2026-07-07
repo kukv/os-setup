@@ -12,7 +12,8 @@ os-setup は **OS 設定 + ツール導入 + オーケストレーション + �
 ## インストール・設定される機能
 
 - **OS 基盤**
-  - WSL: 日本語 locale、`wsl.conf`、NTP（JST）、DNS、デフォルトシェル zsh、Homebrew 導入
+  - Linux 共通: 日本語 locale、NTP（JST）、DNS、デフォルトシェル zsh、Homebrew 導入
+  - WSL のみ: `wsl.conf`、`wslu`（<26.04）、resolv.conf の uplink 貼り替え
   - macOS: Homebrew の更新
 - **開発ツール**
   - `mise`（言語・CLI ツール一式）/ `chezmoi`（dotfiles 適用）
@@ -112,7 +113,8 @@ curl -sf https://raw.githubusercontent.com/kukv/os-setup/refs/heads/main/init.sh
 
 - **WSL / Debian パス**
   - lint: `docker compose run --rm dev ansible-lint`
-  - フル実行（mock コンテナ）: `docker compose up -d --build mock` → `make play`
+  - フル実行（ネイティブ Linux 経路 / mock 既定）: `docker compose up -d --build mock` → `make play`
+  - フル実行（WSL 経路）: `make play-wsl`（`is_wsl=true` を強制。mock はカーネル判定では非 WSL のため）
 - **macOS / Darwin パス**: `test/run-in-vm.sh`（tart VM、`test/Makefile` 参照）
 - CI: PR で shellcheck / yamllint / ansible-lint が走ります。
 
@@ -125,7 +127,7 @@ curl -sf https://raw.githubusercontent.com/kukv/os-setup/refs/heads/main/init.sh
 
 | Role | Debian (WSL) | Darwin (macOS) |
 | --- | --- | --- |
-| `os_base` | apt 基盤、`wsl.conf`、locale、NTP、DNS、デフォルトシェル、Homebrew 導入 | Homebrew 更新 |
+| `os_base` | apt 基盤、locale、NTP、DNS、シェル、Homebrew（共通）＋ `wsl.conf`/`wslu`/resolv.conf（WSL のみ、`is_wsl` 判定） | Homebrew 更新 |
 | `packages` | mise + chezmoi（brew）、Ruby ビルド依存、ARM toolchain | mise + chezmoi、brew formulae/casks、Claude Code CLI |
 | `tools` | chezmoi apply → mise install → go/corepack（共通） | 同じ共通オーケストレーション |
 | `scheduler` | systemd timer (`os-setup.timer`) | launchd LaunchAgent (`com.kukv.os-setup`) |
@@ -141,3 +143,7 @@ ansible/
     ├── tools/     main.yaml + templates/chezmoi.toml.j2
     └── scheduler/ {Debian,Darwin}.yaml + templates(systemd/launchd)
 ```
+
+Debian（Linux）パスは各 role の `Debian.yaml` が共通処理を行い、末尾で
+`is_wsl` / `is_linux_native` により `wsl.yaml` / `linux_native.yaml` に分岐します。
+`linux_native.yaml` は現状プレースホルダ（ネイティブ Linux 機導入時に追記）。
