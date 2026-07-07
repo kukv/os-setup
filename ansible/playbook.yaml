@@ -1,5 +1,5 @@
 ---
-- name: "Unified WSL/macOS setup"
+- name: "Unified Linux (WSL/native) / macOS setup"
   hosts: "localhost"
   gather_facts: true
 

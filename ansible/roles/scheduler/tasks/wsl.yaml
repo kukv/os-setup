@@ -1,0 +1,5 @@
+---
+# WSL-only provisioning-scheduler configuration.
+# No WSL-only scheduler tasks yet — placeholder for future additions.
+- name: "No WSL-specific scheduler tasks yet"
+  ansible.builtin.meta: "noop"

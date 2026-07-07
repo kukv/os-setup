@@ -1,0 +1,26 @@
+---
+- name: "Install WSL utility packages"
+  ansible.builtin.apt:
+    name:
+      - "wslu"
+    state: "present"
+  when: "ansible_facts.distribution_version is version('26.04', '<')"
+
+- name: "Create /etc/wsl.conf"
+  ansible.builtin.template:
+    src: "wsl.conf.j2"
+    dest: "/etc/wsl.conf"
+    owner: "root"
+    group: "root"
+    mode: "0644"
+
+# On WSL the systemd-resolved stub (127.0.0.53) is taken over by the WSL DNS
+# proxy, which breaks name resolution. Bypass the stub by pointing resolv.conf
+# at the uplink file that lists the upstream DNS servers directly.
+- name: "Point /etc/resolv.conf to systemd-resolved uplink servers"
+  ansible.builtin.file:
+    src: "../run/systemd/resolve/resolv.conf"
+    dest: "/etc/resolv.conf"
+    state: "link"
+    force: true
+    follow: false

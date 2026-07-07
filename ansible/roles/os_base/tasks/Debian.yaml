@@ -7,9 +7,6 @@
         name: "{{ requirement_packages }}"
         state: "present"
 
-    - name: "Configure WSL"
-      ansible.builtin.include_tasks: "wsl_configuration.yaml"
-
     - name: "Configure language locale"
       ansible.builtin.include_tasks: "lang_locale_configuration.yaml"
 
@@ -21,6 +18,14 @@
 
     - name: "Change default terminal to zsh"
       ansible.builtin.include_tasks: "change_default_terminal.yaml"
+
+    - name: "Run WSL-specific base configuration"
+      ansible.builtin.include_tasks: "wsl.yaml"
+      when: "is_wsl"
+
+    - name: "Run native-Linux-specific base configuration"
+      ansible.builtin.include_tasks: "linux_native.yaml"
+      when: "is_linux_native"
 
 - name: "Install Homebrew (Linux)"
   ansible.builtin.include_tasks: "homebrew_bootstrap.yaml"

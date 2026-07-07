@@ -3,3 +3,9 @@ tmp_dir: "/tmp"
 # Homebrew bin dir (OS-specific; referenced by tools/packages roles)
 brew_bin_dir: "{{ '/opt/homebrew/bin' if ansible_facts.os_family == 'Darwin' else '/home/linuxbrew/.linuxbrew/bin' }}"
 brew_bin: "{{ brew_bin_dir }}/brew"
+
+# WSL vs native-Linux detection. WSL2 kernels carry "microsoft" in the release
+# string; native Ubuntu/Debian does not. Override via extra_vars (JSON form,
+# e.g. '{"is_wsl": true}') to force a path in tests.
+is_wsl: "{{ 'microsoft' in ansible_facts.kernel | lower }}"
+is_linux_native: "{{ ansible_facts.os_family == 'Debian' and not is_wsl }}"

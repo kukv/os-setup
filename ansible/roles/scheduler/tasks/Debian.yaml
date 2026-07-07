@@ -22,3 +22,11 @@
         name: "os-setup.timer"
         enabled: true
         state: "started"
+
+    - name: "Run WSL-specific scheduler configuration"
+      ansible.builtin.include_tasks: "wsl.yaml"
+      when: "is_wsl"
+
+    - name: "Run native-Linux-specific scheduler configuration"
+      ansible.builtin.include_tasks: "linux_native.yaml"
+      when: "is_linux_native"

@@ -1,0 +1,5 @@
+---
+# Native-Linux-only package installation for the packages role.
+# No native-only packages yet — placeholder for future additions.
+- name: "No native-Linux-specific package tasks yet"
+  ansible.builtin.meta: "noop"

@@ -1,0 +1,6 @@
+---
+# Native-Linux-only (non-WSL Debian/Ubuntu) base configuration.
+# No native-only tasks yet — placeholder for future additions
+# (e.g. NetworkManager/netplan DNS, firmware, desktop packages).
+- name: "No native-Linux-specific base configuration yet"
+  ansible.builtin.meta: "noop"

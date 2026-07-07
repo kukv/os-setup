@@ -13,16 +13,3 @@
 
 - name: "Apply DNS resolver changes before dependent tasks"
   ansible.builtin.meta: "flush_handlers"
-
-# On WSL the systemd-resolved stub (127.0.0.53) is taken over by the WSL DNS
-# proxy, which breaks name resolution. Bypass the stub by pointing resolv.conf
-# at the uplink file that lists the upstream DNS servers directly. Plain Ubuntu
-# keeps its standard stub resolver, so this is gated to WSL.
-- name: "Point /etc/resolv.conf to systemd-resolved uplink servers (WSL)"
-  ansible.builtin.file:
-    src: "../run/systemd/resolve/resolv.conf"
-    dest: "/etc/resolv.conf"
-    state: "link"
-    force: true
-    follow: false
-  when: "'microsoft' in ansible_facts.kernel | lower"

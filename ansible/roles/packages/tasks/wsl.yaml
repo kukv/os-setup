@@ -1,0 +1,5 @@
+---
+# WSL-only package installation for the packages role.
+# No WSL-only packages yet — placeholder for future additions.
+- name: "No WSL-specific package tasks yet"
+  ansible.builtin.meta: "noop"
