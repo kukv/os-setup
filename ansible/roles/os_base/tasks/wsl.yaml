@@ -24,3 +24,24 @@
     state: "link"
     force: true
     follow: false
+
+# WSL registers the WSLInterop binfmt early in boot, but systemd-binfmt.service
+# then resets binfmt_misc and re-registers only /etc/binfmt.d entries, dropping
+# WSLInterop. That breaks running Windows executables from WSL (ssh.exe,
+# op-ssh-sign-wsl.exe, ...). Re-declare it under /etc/binfmt.d so systemd keeps it.
+- name: "Ensure /etc/binfmt.d exists"
+  ansible.builtin.file:
+    path: "/etc/binfmt.d"
+    state: "directory"
+    owner: "root"
+    group: "root"
+    mode: "0755"
+
+- name: "Persist WSL interop binfmt across systemd's binfmt reset"
+  ansible.builtin.copy:
+    content: ":WSLInterop:M::MZ::/init:PF\n"
+    dest: "/etc/binfmt.d/WSLInterop.conf"
+    owner: "root"
+    group: "root"
+    mode: "0644"
+  notify: "Restart systemd-binfmt"

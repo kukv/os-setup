@@ -4,3 +4,9 @@
   ansible.builtin.service:
     name: "systemd-resolved"
     state: "restarted"
+
+- name: "Restart systemd-binfmt"
+  become: true
+  ansible.builtin.service:
+    name: "systemd-binfmt"
+    state: "restarted"
