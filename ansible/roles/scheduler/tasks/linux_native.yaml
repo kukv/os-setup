@@ -1,0 +1,5 @@
+---
+# Native-Linux-only provisioning-scheduler configuration.
+# No native-only scheduler tasks yet — placeholder for future additions.
+- name: "No native-Linux-specific scheduler tasks yet"
+  ansible.builtin.meta: "noop"
