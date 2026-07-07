@@ -47,7 +47,7 @@ git:
   user:
     name: "Your Name"
     email: "you@example.com"
-    signing_key: ""   # macOS のみ（1Password の SSH 公開鍵）。WSL は空で可
+  use_1password: true   # false でローカル SSH 鍵署名（既定 true）
 ```
 
 サンプル: [`extra_vars.yaml.example`](extra_vars.yaml.example) / [`os-setup.env.example`](os-setup.env.example)

@@ -8,8 +8,13 @@ git:
   user:
     name: "Your Name"
     email: "you@example.com"
-    # SSH signing public key (macOS / 1Password SSH Agent). Leave empty on WSL.
-    signing_key: ""
+  # Whether this machine uses 1Password for SSH auth & commit signing.
+  #   true  : macOS, or WSL backed by the Windows 1Password app (default)
+  #   false : signs commits with a local SSH key instead
+  use_1password: true
+  # Only when use_1password is false: path to the local signing PUBLIC key.
+  # Omit to use the default ~/.ssh/id_ed25519.pub.
+  # signing_key_file: "~/.ssh/id_ed25519.pub"
 
 # GitHub token for mise (raises GitHub API rate limits while mise fetches tools).
 #   WSL/Linux : set it here (this file is passed via --extra-vars "@file").

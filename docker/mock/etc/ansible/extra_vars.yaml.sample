@@ -14,4 +14,4 @@ git:
   user:
     name: "username"
     email: "test@example.com"
-    signing_key: ""
+  use_1password: true
