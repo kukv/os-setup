@@ -61,6 +61,11 @@ play:
 		sudo -u "$(ANSIBLE_USER)" \
 		bash -c "ansible-playbook -i inventories/hosts.yaml playbook.yaml --extra-vars '@/etc/ansible/extra_vars.yaml' --extra-vars 'ansible_user=$(ANSIBLE_USER)'"
 
+play-wsl:
+	$(MOCK_RUN_CONTEXT) \
+		sudo -u "$(ANSIBLE_USER)" \
+		bash -c "ansible-playbook -i inventories/hosts.yaml playbook.yaml --extra-vars '@/etc/ansible/extra_vars.yaml' --extra-vars 'ansible_user=$(ANSIBLE_USER)' --extra-vars '{\"is_wsl\": true}'"
+
 play/%:
 	$(MOCK_RUN_CONTEXT) \
 		sudo -u "$(ANSIBLE_USER)" \
