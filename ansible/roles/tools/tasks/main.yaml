@@ -11,13 +11,25 @@
     dest: "{{ ansible_facts.user_dir }}/.config/chezmoi/chezmoi.toml"
     mode: "0600"
 
-- name: "Apply dotfiles via chezmoi"
+- name: "Initialize chezmoi source on first run"
   ansible.builtin.command:
-    cmd: "{{ brew_bin_dir }}/chezmoi init --apply --force {{ dotfiles_repo_url }}"
+    cmd: "{{ brew_bin_dir }}/chezmoi init {{ dotfiles_repo_url }}"
+  args:
+    # Only clones on the first run; chezmoi init does not pull an existing source.
+    creates: "{{ ansible_facts.user_dir }}/.local/share/chezmoi/.git"
   environment:
     PATH: "{{ brew_bin_dir }}:{{ ansible_facts.env.PATH }}"
-  register: "chezmoi_apply"
-  changed_when: "chezmoi_apply.rc == 0"
+
+- name: "Pull latest dotfiles and apply via chezmoi"
+  ansible.builtin.command:
+    # `chezmoi update` runs `git pull --autostash --rebase` then `chezmoi apply`,
+    # so scheduled runs pick up the latest dotfiles. `--force` overwrites files
+    # changed at runtime (e.g. .claude/settings.json) without a TTY prompt.
+    cmd: "{{ brew_bin_dir }}/chezmoi update --force"
+  environment:
+    PATH: "{{ brew_bin_dir }}:{{ ansible_facts.env.PATH }}"
+  register: "chezmoi_update"
+  changed_when: "chezmoi_update.rc == 0"
 
 - name: "Install mise tools"
   ansible.builtin.command:
