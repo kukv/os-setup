@@ -13,8 +13,8 @@ git:
   #   false : signs commits with a local SSH key instead
   use_1password: true
   # Only when use_1password is false: path to the local signing PUBLIC key.
-  # Omit to use the default ~/.ssh/id_ed25519.pub.
-  # signing_key_file: "~/.ssh/id_ed25519.pub"
+  # Omit to use the default ~/.ssh/git_signing_key.pub.
+  # signing_key_file: "~/.ssh/git_signing_key.pub"
 
 # GitHub token for mise (raises GitHub API rate limits while mise fetches tools).
 #   WSL/Linux : set it here (this file is passed via --extra-vars "@file").
