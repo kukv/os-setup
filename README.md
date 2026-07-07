@@ -113,8 +113,10 @@ curl -sf https://raw.githubusercontent.com/kukv/os-setup/refs/heads/main/init.sh
 
 - **WSL / Debian パス**
   - lint: `docker compose run --rm dev ansible-lint`
-  - フル実行（ネイティブ Linux 経路 / mock 既定）: `docker compose up -d --build mock` → `make play`
-  - フル実行（WSL 経路）: `make play-wsl`（`is_wsl=true` を強制。mock はカーネル判定では非 WSL のため）
+  - フル実行（mock、経路は自動判定）: `docker compose up -d --build mock` → `make play`
+    - `make play` は mock コンテナのカーネル判定に従うため、実行経路は Docker ホストに依存します。Linux CI ホストでは**ネイティブ Linux 経路**、Docker Desktop for Windows（WSL2 バックエンド）では mock のカーネルに `microsoft` が含まれるため**WSL 経路**になります。
+  - フル実行（経路を明示的に固定）: `make play-wsl`（`is_wsl=true` を強制）/ `make play-native`（`is_wsl=false` を強制）。ホストによらず経路を固定したい場合はこちらを推奨します。
+    - 注意: mock（Docker）環境では `make play-wsl` は「resolv.conf を systemd-resolved uplink サーバへ向ける」タスクで `[Errno 16] Device or resource busy` により失敗します。Docker が `/etc/resolv.conf` を bind mount しているための制約で、WSL 経路自体は実機の WSL で動作確認済みです。
 - **macOS / Darwin パス**: `test/run-in-vm.sh`（tart VM、`test/Makefile` 参照）
 - CI: PR で shellcheck / yamllint / ansible-lint が走ります。
 
@@ -144,6 +146,6 @@ ansible/
     └── scheduler/ {Debian,Darwin}.yaml + templates(systemd/launchd)
 ```
 
-Debian（Linux）パスは各 role の `Debian.yaml` が共通処理を行い、末尾で
+Debian（Linux）パスは `os_base` / `packages` / `scheduler` の各 `Debian.yaml` が共通処理を行い、末尾で
 `is_wsl` / `is_linux_native` により `wsl.yaml` / `linux_native.yaml` に分岐します。
 `linux_native.yaml` は現状プレースホルダ（ネイティブ Linux 機導入時に追記）。
