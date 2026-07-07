@@ -44,10 +44,4 @@
     owner: "root"
     group: "root"
     mode: "0644"
-  register: "wsl_interop_binfmt"
-
-- name: "Re-register interop binfmt now (without waiting for a reboot)"
-  ansible.builtin.systemd:
-    name: "systemd-binfmt.service"
-    state: "restarted"
-  when: "wsl_interop_binfmt is changed"
+  notify: "Restart systemd-binfmt"
