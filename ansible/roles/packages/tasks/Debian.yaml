@@ -10,3 +10,11 @@
   ansible.builtin.apt:
     name: "{{ arm_cross_packages }}"
     state: "present"
+
+- name: "Run WSL-specific package installation"
+  ansible.builtin.include_tasks: "wsl.yaml"
+  when: "is_wsl"
+
+- name: "Run native-Linux-specific package installation"
+  ansible.builtin.include_tasks: "linux_native.yaml"
+  when: "is_linux_native"
