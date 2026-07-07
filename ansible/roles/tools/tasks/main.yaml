@@ -13,7 +13,7 @@
 
 - name: "Apply dotfiles via chezmoi"
   ansible.builtin.command:
-    cmd: "{{ brew_bin_dir }}/chezmoi init --apply {{ dotfiles_repo_url }}"
+    cmd: "{{ brew_bin_dir }}/chezmoi init --apply --force {{ dotfiles_repo_url }}"
   environment:
     PATH: "{{ brew_bin_dir }}:{{ ansible_facts.env.PATH }}"
   register: "chezmoi_apply"
