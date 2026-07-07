@@ -7,4 +7,4 @@ git:
   user:
     name: "test-user"
     email: "test@example.com"
-    signing_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAITestDummyKeyForTartVMTesting"
+  use_1password: true
