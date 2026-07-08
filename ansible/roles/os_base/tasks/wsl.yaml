@@ -29,6 +29,13 @@
 # then resets binfmt_misc and re-registers only /etc/binfmt.d entries, dropping
 # WSLInterop. That breaks running Windows executables from WSL (ssh.exe,
 # op-ssh-sign-wsl.exe, ...). Re-declare it under /etc/binfmt.d so systemd keeps it.
+#
+# Note: WSL's own host registration uses flags "PF", but we must NOT set the "F"
+# (fix-binary) flag here. "F" makes the kernel open the interpreter (/init) at
+# registration time; when systemd-binfmt re-applies this rule that open fails and
+# the write to /proc/sys/fs/binfmt_misc/register errors out, so the whole unit
+# exits non-zero ("Job for systemd-binfmt.service failed ..."). Register with "P"
+# (preserve-argv0) only, which is what a running WSL exposes for WSLInterop.
 - name: "Ensure /etc/binfmt.d exists"
   ansible.builtin.file:
     path: "/etc/binfmt.d"
@@ -39,7 +46,7 @@
 
 - name: "Persist WSL interop binfmt across systemd's binfmt reset"
   ansible.builtin.copy:
-    content: ":WSLInterop:M::MZ::/init:PF\n"
+    content: ":WSLInterop:M::MZ::/init:P\n"
     dest: "/etc/binfmt.d/WSLInterop.conf"
     owner: "root"
     group: "root"
