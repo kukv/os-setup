@@ -4,6 +4,15 @@
     name: "cirruslabs/cli"
     state: "present"
 
+- name: "Trust the cirruslabs/cli tap"
+  # Current Homebrew (HOMEBREW_REQUIRE_TAP_TRUST) refuses to load formulae from
+  # untrusted third-party taps. tart's `softnet` dependency lives in this tap,
+  # so it must be trusted before the formulae install below.
+  ansible.builtin.command:
+    cmd: "{{ brew_bin }} trust cirruslabs/cli"
+  register: "brew_trust"
+  changed_when: "'Trusted tap' in brew_trust.stdout"
+
 - name: "Install Homebrew formulae"
   community.general.homebrew:
     name: "{{ homebrew.formulae }}"
