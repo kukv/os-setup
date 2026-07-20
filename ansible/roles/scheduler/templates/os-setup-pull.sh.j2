@@ -9,6 +9,16 @@ set -euo pipefail
 # `which claude` 等で正しく検出されないと毎回再インストールが走ってしまう。
 export PATH="${HOME}/.local/bin:${PATH}"
 
+# 日付付きログファイルに出力をリダイレクトする。
+# launchd の固定名 StandardOutPath に任せると単一ファイルへ追記され続け、
+# mtime が毎回更新されるため log_rotation.sh の `-mtime +N -delete` が
+# 永久に発火しない。実行日ごとに別ファイルへ書き出すことで、古いログが
+# 保持期間を過ぎて自然に削除されるようになる。
+LOG_DIR="{{ scheduled.log_dir }}"
+mkdir -p "${LOG_DIR}"
+_log_date="$(date +%Y%m%d)"
+exec >>"${LOG_DIR}/os-setup-${_log_date}.log" 2>>"${LOG_DIR}/os-setup-${_log_date}.error.log"
+
 ENV_FILE="${HOME}/.local/etc/os-setup.env"
 EXTRA_VARS_FILE="${HOME}/.local/etc/extra_vars.yaml"
 
