@@ -3,3 +3,8 @@
   community.general.homebrew:
     update_homebrew: true
     upgrade_all: true
+    # cask のアップグレードは docker-desktop 等が cleanup で sudo を要求し、
+    # 非対話の定期実行(launchd)ではパスワードを渡せず失敗する。
+    # formula のみを対象にして sudo を要する cask を除外する。
+    upgrade_options:
+      - "formula"
