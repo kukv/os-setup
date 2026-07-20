@@ -47,12 +47,11 @@ homebrew:
     - "vnc-viewer"
     - "drawio"
     - "docker-desktop"
-    - "zoom"
     - "linear"
-    - "cloudflare-warp"
-    - "onedrive"
-    - "logi-options+"
-    - "microsoft-office"
+    # pkg/installer casks that require sudo are NOT managed here: they fail under
+    # non-interactive ansible-pull ("sudo: a terminal is required to read the
+    # password") and would also break scheduled runs. Install/upgrade manually:
+    #   cloudflare-warp, logi-options+, microsoft-office, onedrive, zoom
 
 # Mac App Store apps installed via `mas` (requires App Store sign-in)
 mas_apps:

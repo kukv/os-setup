@@ -43,6 +43,12 @@ VM 検証で見つかった、実機でも踏みうる 2 件。
 
 **注意（初回実行の落とし穴）**: macOS の `init.sh` は `--extra-vars @extra_vars.yaml` を渡すだけで **`os-setup.env` を source しない**（source するのは定期実行の `os-setup-pull.sh` のみ）。そのため **初回の `init.sh` 実行前に手動で os-setup.env を source** しないと、この初回 run で mise がレート制限に当たる。手順は下記「移行手順」step 4 参照。
 
+### Finding #3（os-setup 側で対応済み）: pkg/sudo 形式の cask は自動対象外
+`zoom` / `microsoft-office` / `onedrive` / `cloudflare-warp` / `logi-options+` は pkg/installer 形式で導入に `sudo` が必要。非対話の `ansible-pull` では `sudo` がパスワードを聞けず（`sudo: a terminal is required`）失敗するため、**cask 管理リストから外した**（手動導入。README「手動管理アプリ」参照）。
+
+### 既存アプリの adopt に注意（App Management）
+手動導入済みのアプリ（例: Docker）を os-setup の cask が引き継ぐ（adopt）際、macOS の **App Management 保護**により root でも `/Applications/*.app` の改変が拒否され失敗することがある（`xattr ... Operation not permitted`）。対処: System Settings → Privacy & Security → **App Management**（＋ Full Disk Access）に実行中のターミナルを追加し、対象アプリを終了してから `brew install --cask <name> --adopt`。
+
 ---
 
 ## 設定ファイル（macOS）

@@ -22,7 +22,9 @@ os-setup は **OS 設定 + ツール導入 + オーケストレーション + �
 - **dotfiles 適用** — `chezmoi` で `kukv/dotfiles` を展開（mise の設定・zsh・git・Claude/Codex 設定 等）
 - **定期プロビジョニング** — `ansible-pull` を WSL は systemd timer、macOS は launchd で定期実行
 
-> **手動管理（自動化対象外）のアプリ**: LocalStack Desktop は Homebrew cask / Mac App Store のいずれでも配布されていないため、必要に応じて手動でインストールする。
+> **手動管理（自動化対象外）のアプリ**:
+> - LocalStack Desktop — Homebrew cask / Mac App Store のいずれでも配布されていないため。
+> - `cloudflare-warp` / `logi-options+` / `microsoft-office` / `onedrive` / `zoom` — pkg/installer 形式で導入に `sudo` が必要。非対話の `ansible-pull` では `sudo` がパスワードを聞けず失敗するため、cask 管理から外し手動導入とする。
 
 ---
 
