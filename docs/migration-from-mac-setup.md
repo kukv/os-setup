@@ -20,11 +20,12 @@ os-setup と mac-setup は責務が重なり、同じパス・同じ launchd ラ
 | 残置物 | 影響 |
 | --- | --- |
 | **launchd `com.kukv.mac-setup` / `com.kukv.mac-setup-log-rotation`** | os-setup は旧 agent を消さない。放置すると週次で mac-setup を ansible-pull し直し、dotfiles を chezmoi から奪い返す。**最優先で撤去。** |
-| `~/.zshenv`（+ `~/.zshenv.generated` / `~/.zshenv.user`） | chezmoi 管理外で残置し、古い env を source し続ける。 |
+| `~/.zshenv`（+ `~/.zshenv.generated` / `~/.zshenv.user`） | chezmoi 管理外の mac-setup 製。中身は空の generated/user を source するだけ（実害は無いが混乱の元）。撤去可。 |
 | `~/.local/bin/mac-setup-pull.sh` / `mac-setup-log-rotation.sh` | 孤立スクリプト。 |
-| `~/.oh-my-zsh` | mac-setup が clone。dotfiles 側も一部 vendor するため中途半端に重複。 |
-| `~/Library/Application Support/iTerm2/DynamicProfiles/default_profile.json` | 孤立プロファイル。 |
+| `~/Library/Application Support/iTerm2/DynamicProfiles/default_profile.json` | 孤立プロファイル（実害なし。素の iTerm2 に戻すなら削除）。 |
 | `~/.local/etc/mac-setup.env` | token 移行後は不要。 |
+
+> ⚠️ **`~/.oh-my-zsh` は撤去しないこと。** 一見 mac-setup が clone した残骸に見えるが、kukv/dotfiles が chezmoi で全体を管理しており（数千ファイル）、現行 `.zshrc` が `source $ZSH/oh-my-zsh.sh` で使用中。削除するとシェルが壊れる（実機で確認済み）。
 
 ---
 
@@ -121,7 +122,7 @@ rm -f ~/.zshenv ~/.zshenv.generated ~/.zshenv.user     # chezmoi 版 .zshrc/.zpr
 rm -f ~/.local/bin/mac-setup-pull.sh ~/.local/bin/mac-setup-log-rotation.sh
 rm -f ~/Library/Application\ Support/iTerm2/DynamicProfiles/default_profile.json
 rm -f ~/.local/etc/mac-setup.env     # token を os-setup.env に移した後
-# ~/.oh-my-zsh は dotfiles の zsh 構成を確認してから判断（不要なら rm -rf）
+# ~/.oh-my-zsh は削除しない（dotfiles が chezmoi で管理し .zshrc が使用中）
 ```
 
 ---
