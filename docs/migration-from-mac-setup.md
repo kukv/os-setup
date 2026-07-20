@@ -39,10 +39,40 @@ VM 検証で見つかった、実機でも踏みうる 2 件。
 - **mac-setup（ロールバック時）:** mac-setup main は未修正のため、切り戻す場合は事前に手動で `brew trust cirruslabs/cli` が必要。
 
 ### Finding #2: mise install が GitHub API レート制限で失敗
-`mise install` が未認証 GitHub API のレート制限（403）で失敗する。token があれば回避できる。
+`mise install` が未認証 GitHub API のレート制限（403）で失敗する。GitHub token があれば回避できる（scope なしの PAT で十分）。token は `~/.local/etc/os-setup.env` に置く（下記「設定ファイル」参照。既存 `~/.local/etc/mac-setup.env` の値を流用してよい）。
 
-- 実機実行前に `~/.local/etc/os-setup.env` に `github_token`（`GITHUB_TOKEN`）を用意する。
-  既存の `~/.local/etc/mac-setup.env` の値を流用してよい。
+**注意（初回実行の落とし穴）**: macOS の `init.sh` は `--extra-vars @extra_vars.yaml` を渡すだけで **`os-setup.env` を source しない**（source するのは定期実行の `os-setup-pull.sh` のみ）。そのため **初回の `init.sh` 実行前に手動で os-setup.env を source** しないと、この初回 run で mise がレート制限に当たる。手順は下記「移行手順」step 4 参照。
+
+---
+
+## 設定ファイル（macOS）
+
+移行手順の前に 2 ファイルを用意する。
+
+### `~/.local/etc/extra_vars.yaml`
+
+```yaml
+---
+git:
+  user:
+    name: "あなたの実名"
+    email: "you@example.com"
+  use_1password: true   # 1Password で SSH認証・コミット署名する実機は true。
+                        # ローカルSSH鍵で署名するなら false（必要なら signing_key_file: も指定）
+```
+
+- 必須は `git.user.name` / `git.user.email`（playbook が assert）。
+- `github_token` はここに書かない（macOS は os-setup.env 側）。`provisioning_schedule` は WSL 専用で不要。
+
+### `~/.local/etc/os-setup.env`（`chmod 0600`）
+
+```bash
+GITHUB_TOKEN=ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+HOMEBREW_GITHUB_API_TOKEN=ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+MISE_GITHUB_TOKEN=ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+```
+
+- 3 つとも同じ token で可。mise / Homebrew の API レート制限緩和用なので scope なし PAT で十分。
 
 ---
 
@@ -51,28 +81,36 @@ VM 検証で見つかった、実機でも踏みうる 2 件。
 ```bash
 # 0) 事前対応
 #    - Finding #1: os-setup は修正済み（最新 main を使う）
-#    - Finding #2: ~/.local/etc/os-setup.env に github_token を用意
+#    - Finding #2: step 1 で os-setup.env を用意し、step 4 で source する
 
-# 1) バックアップ（保険）
+# 1) 設定ファイルを用意（上記「設定ファイル」節参照）
+mkdir -p ~/.local/etc
+$EDITOR ~/.local/etc/extra_vars.yaml     # git identity + use_1password
+$EDITOR ~/.local/etc/os-setup.env        # GITHUB_TOKEN 等
+chmod 0600 ~/.local/etc/os-setup.env
+
+# 2) バックアップ（保険）
 mkdir -p ~/migrate-backup
 cp -a ~/.zshrc ~/.zprofile ~/.zshenv ~/.gitconfig ~/.ssh/config \
       ~/.config/mise/config.toml ~/migrate-backup/ 2>/dev/null
 
-# 2) 旧 mac-setup スケジューラを先に止める（dotfiles 奪い合いの防止）
+# 3) 旧 mac-setup スケジューラを先に止める（dotfiles 奪い合いの防止）
 UID_N=$(id -u)
 launchctl bootout gui/$UID_N/com.kukv.mac-setup 2>/dev/null
 launchctl bootout gui/$UID_N/com.kukv.mac-setup-log-rotation 2>/dev/null
 rm -f ~/Library/LaunchAgents/com.kukv.mac-setup*.plist
 
-# 3) os-setup を適用
+# 4) os-setup を適用
+#    ★ 初回は os-setup.env を先に source する（init.sh は自動で読まない → mise のレート制限回避）
+set -a; source ~/.local/etc/os-setup.env; set +a
 curl -sf https://raw.githubusercontent.com/kukv/os-setup/refs/heads/main/init.sh | zsh
 
-# 4) 検証
+# 5) 検証
 launchctl list | grep kukv          # os-setup の 2 本だけになっているか
 mise --version && chezmoi --version
 git config --get gpg.ssh.program     # 1Password 署名が効くか
 
-# 5) 残置物の掃除
+# 6) 残置物の掃除
 rm -f ~/.zshenv ~/.zshenv.generated ~/.zshenv.user     # chezmoi 版 .zshrc/.zprofile に一本化
 rm -f ~/.local/bin/mac-setup-pull.sh ~/.local/bin/mac-setup-log-rotation.sh
 rm -f ~/Library/Application\ Support/iTerm2/DynamicProfiles/default_profile.json
