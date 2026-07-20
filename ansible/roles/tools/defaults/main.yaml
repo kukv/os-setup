@@ -3,3 +3,12 @@ dotfiles_repo_url: "https://github.com/kukv/dotfiles.git"
 go:
   default_packages:
     - "golang.org/x/tools/cmd/godoc@latest"
+herdr:
+  plugins:
+    # id は herdr-plugin.toml の plugin_id（インストール先ディレクトリ名の判定に使用)
+    - id: "kukv.github-dash"
+      repo: "kukv/herdr-plugin-github-dash"
+    - id: "herdr-file-viewer"
+      repo: "smarzban/herdr-file-viewer"
+    - id: "hunk.diff"
+      repo: "edmundmiller/herdr-plugin-hunk"

@@ -52,6 +52,16 @@
   loop: "{{ go.default_packages }}"
   changed_when: false
 
+- name: "Install herdr plugins"
+  ansible.builtin.command:
+    # インストール先はハッシュ付きディレクトリになるため、creates は glob で判定する。
+    cmd: "{{ brew_bin_dir }}/mise exec -- herdr plugin install {{ item.repo }} --yes"
+  args:
+    creates: "{{ ansible_facts.user_dir }}/.config/herdr/plugins/github/{{ item.id }}-*"
+  environment:
+    PATH: "{{ brew_bin_dir }}:{{ ansible_facts.env.PATH }}"
+  loop: "{{ herdr.plugins }}"
+
 - name: "Enable Node corepack"
   ansible.builtin.command:
     cmd: "{{ brew_bin_dir }}/mise exec node -- corepack enable"
