@@ -50,6 +50,7 @@ git:
     name: "Your Name"
     email: "you@example.com"
   use_1password: true   # false でローカル SSH 鍵署名（既定 true）
+  # signing_key_file: "~/.ssh/git_signing_key.pub"  # user.signingkey に固定する公開鍵（OS 問わず有効。省略時は既定パス）
 ```
 
 サンプル: [`extra_vars.yaml.example`](extra_vars.yaml.example) / [`os-setup.env.example`](os-setup.env.example)
