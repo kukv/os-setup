@@ -12,8 +12,9 @@ git:
   #   true  : macOS, or WSL backed by the Windows 1Password app (default)
   #   false : signs commits with a local SSH key instead
   use_1password: true
-  # Only when use_1password is false: path to the local signing PUBLIC key.
-  # Omit to use the default ~/.ssh/git_signing_key.pub.
+  # Path to the signing PUBLIC key pinned as user.signingkey (all OSes,
+  # regardless of use_1password). Omit to use the default
+  # ~/.ssh/git_signing_key.pub.
   # signing_key_file: "~/.ssh/git_signing_key.pub"
 
 # GitHub token for mise (raises GitHub API rate limits while mise fetches tools).
