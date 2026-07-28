@@ -12,3 +12,5 @@ herdr:
       repo: "smarzban/herdr-file-viewer"
     - id: "hunk.diff"
       repo: "edmundmiller/herdr-plugin-hunk"
+    - id: "official.browser"
+      repo: "ogulcancelik/herdr-browser"
