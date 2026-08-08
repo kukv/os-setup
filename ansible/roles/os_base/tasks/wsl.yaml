@@ -14,12 +14,18 @@
     group: "root"
     mode: "0644"
 
-# On WSL the systemd-resolved stub (127.0.0.53) is taken over by the WSL DNS
-# proxy, which breaks name resolution. Bypass the stub by pointing resolv.conf
-# at the uplink file that lists the upstream DNS servers directly.
-- name: "Point /etc/resolv.conf to systemd-resolved uplink servers"
+# Glibc sends A and AAAA queries in parallel on one UDP socket, and WSL2's NAT
+# drops one of the two responses, so with resolv.conf pointing at external
+# servers (uplink mode) every getaddrinfo stalls for the 5s glibc timeout.
+# Point glibc at the local systemd-resolved stub instead: the parallel queries
+# stay on loopback and resolved talks upstream per-transaction, with caching.
+# The stub was once hijacked by the WSL DNS proxy (a80e9b2), but the proxy now
+# binds 10.255.255.254 and 127.0.0.53 is owned by systemd-resolved. If the
+# hijack ever recurs, fall back to a static resolv.conf with
+# "options single-request-reopen".
+- name: "Point /etc/resolv.conf to systemd-resolved stub resolver"
   ansible.builtin.file:
-    src: "../run/systemd/resolve/resolv.conf"
+    src: "../run/systemd/resolve/stub-resolv.conf"
     dest: "/etc/resolv.conf"
     state: "link"
     force: true
