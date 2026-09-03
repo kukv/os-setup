@@ -1,8 +1,5 @@
 ---
 dotfiles_repo_url: "https://github.com/kukv/dotfiles.git"
-go:
-  default_packages:
-    - "golang.org/x/tools/cmd/godoc@latest"
 agents:
   skills:
     # name は skills add の --skill 名。インストール先 ~/.claude/skills/<name> で冪等判定する。
