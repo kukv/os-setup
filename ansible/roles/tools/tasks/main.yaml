@@ -44,14 +44,6 @@
   delay: 10
   changed_when: "'installed' in mise_install.stdout or 'installed' in mise_install.stderr"
 
-- name: "Install default Go packages"
-  ansible.builtin.command:
-    cmd: "{{ brew_bin_dir }}/mise exec go -- go install {{ item }}"
-  environment:
-    PATH: "{{ brew_bin_dir }}:{{ ansible_facts.env.PATH }}"
-  loop: "{{ go.default_packages }}"
-  changed_when: false
-
 - name: "Install herdr plugins"
   ansible.builtin.command:
     # インストール先はハッシュ付きディレクトリになるため、creates は glob で判定する。
