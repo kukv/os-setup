@@ -3,6 +3,17 @@ dotfiles_repo_url: "https://github.com/kukv/dotfiles.git"
 go:
   default_packages:
     - "golang.org/x/tools/cmd/godoc@latest"
+agents:
+  skills:
+    # name は skills add の --skill 名。インストール先 ~/.claude/skills/<name> で冪等判定する。
+    # 対象エージェントはタスク側で claude-code 固定。codex 等に広げるときはそちらを直す。
+    # hunk-review は入れない。modem-dev/hunk が同名スキルを公開しているが、自作ローダー
+    # (~/.claude/skills/hunk-review) が hunk バイナリ同梱スキルを実行時解決しており、
+    # そちらの方が mise の npm:hunkdiff と版が一致するため。
+    - name: "herdr"
+      repo: "herdrdev/herdr"
+    - name: "find-skills"
+      repo: "vercel-labs/skills"
 herdr:
   plugins:
     # id は herdr-plugin.toml の plugin_id（インストール先ディレクトリ名の判定に使用)
