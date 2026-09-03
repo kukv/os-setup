@@ -44,18 +44,6 @@
   delay: 10
   changed_when: "'installed' in mise_install.stdout or 'installed' in mise_install.stderr"
 
-- name: "Re-apply chezmoi so scripts depending on mise tools can run"
-  ansible.builtin.command:
-    # 上の `chezmoi update` は mise install より前に走るため、mise 管理の CLI に依存する
-    # run_onchange スクリプト (Claude Code の skills 導入など) は初回だけ skip される。
-    # ここで apply し直して取りこぼしを回収する。2 回目以降は run_onchange のハッシュ判定で
-    # 何も実行されない。
-    cmd: "{{ brew_bin_dir }}/chezmoi apply --force"
-  environment:
-    PATH: "{{ ansible_facts.user_dir }}/.local/share/mise/shims:{{ brew_bin_dir }}:{{ ansible_facts.env.PATH }}"
-  register: "chezmoi_reapply"
-  changed_when: "chezmoi_reapply.rc == 0"
-
 - name: "Install default Go packages"
   ansible.builtin.command:
     cmd: "{{ brew_bin_dir }}/mise exec go -- go install {{ item }}"
@@ -73,6 +61,17 @@
   environment:
     PATH: "{{ brew_bin_dir }}:{{ ansible_facts.env.PATH }}"
   loop: "{{ herdr.plugins }}"
+
+- name: "Install Claude Code skills"
+  ansible.builtin.command:
+    # skills CLI は lockfile からの復元コマンドを持たないため、入れたいスキルを defaults で
+    # 宣言し、グローバル (~/.claude/skills) へ導入する。
+    cmd: "{{ brew_bin_dir }}/mise exec -- skills add {{ item.repo }} --skill {{ item.name }} --agent claude-code --global --yes"
+  args:
+    creates: "{{ ansible_facts.user_dir }}/.claude/skills/{{ item.name }}"
+  environment:
+    PATH: "{{ brew_bin_dir }}:{{ ansible_facts.env.PATH }}"
+  loop: "{{ agents.skills }}"
 
 - name: "Enable Node corepack"
   ansible.builtin.command:
