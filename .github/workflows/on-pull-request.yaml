@@ -12,7 +12,7 @@ jobs:
         uses: "actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10" # v6.0.3
 
       - name: "Check with shellcheck"
-        uses: "reviewdog/action-shellcheck@4c07458293ac342d477251099501a718ae5ef86e" # v1.32.0
+        uses: "reviewdog/action-shellcheck@0722bbdb0d47f04c1b53b8734d2422ac63a45ec6" # v1.32.1
         with:
           github_token: "${{ secrets.GITHUB_TOKEN }}"
           fail_level: "error"
