@@ -1,0 +1,38 @@
+---
+name: "security"
+
+on:
+  pull_request:
+  push:
+    branches: ["main"]
+  schedule:
+    - cron: "0 0 * * 1" # 週次。脆弱性 DB は後から更新されるため定期実行する
+
+permissions: {}
+
+concurrency:
+  group: "${{ github.workflow }}-${{ github.ref }}"
+  # 真偽値として評価させるため引用しない
+  # yamllint disable-line rule:quoted-strings
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  # 多エコシステム SCA(lockfile を再帰自動検出。リポ直下の osv-scanner.toml は自動適用)
+  sca:
+    runs-on: "ubuntu-latest"
+    permissions:
+      contents: "read"
+
+    steps:
+      - name: "Checkout Repository"
+        uses: "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1" # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: "Scan with osv-scanner"
+        uses: "google/osv-scanner-action/osv-scanner-action@6e4298ebc4db23e847df9b2e2de2939d6f066c67" # v2.5.1
+        with:
+          scan-args: |-
+            --recursive
+            --include-git-root
+            ./
