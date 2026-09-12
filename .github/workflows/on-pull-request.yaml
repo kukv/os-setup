@@ -3,13 +3,21 @@ name: "on-pull-request"
 
 on:
   pull_request:
+
+permissions: {}
+
 jobs:
   check-shell:
     runs-on: "ubuntu-latest"
+    permissions:
+      contents: "read"
+      pull-requests: "write"
 
     steps:
       - name: "Checkout Repository"
         uses: "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1" # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: "Check with shellcheck"
         uses: "reviewdog/action-shellcheck@0722bbdb0d47f04c1b53b8734d2422ac63a45ec6" # v1.32.1
@@ -24,10 +32,15 @@ jobs:
 
   check-yaml:
     runs-on: "ubuntu-latest"
+    permissions:
+      contents: "read"
+      pull-requests: "write"
 
     steps:
       - name: "Checkout Repository"
         uses: "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1" # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: "Check with yaml"
         uses: "reviewdog/action-yamllint@de68272fdca5f2a961fb309e0d2e13c2eb186d9e" # v1.23.1
@@ -39,10 +52,22 @@ jobs:
 
   check-ansible:
     runs-on: "ubuntu-latest"
+    permissions:
+      contents: "read"
+      pull-requests: "write"
 
     steps:
+      # サプライチェーン攻撃の検知に向けた計測(analyze モード)。
+      # syscall を capture して falco-analyze ジョブで通信先・プロセスを可視化する。
+      # 検知しても fail させない。
+      - name: "Start Falco"
+        uses: "falcosecurity/falco-actions/start@558a3ceeee9403e1c875ffbeb704c34c93e24752" # main(タグ未発行のため commit を固定)
+        with:
+          mode: "analyze"
       - name: "Checkout Repository"
         uses: "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1" # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: "Set up Python"
         uses: "actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97" # v7.0.0
@@ -62,3 +87,27 @@ jobs:
       - name: "Check with ansible-lint"
         working-directory: "./ansible"
         run: "ansible-lint --config-file .ansible-lint"
+      - name: "Stop Falco"
+        if: "always()"
+        uses: "falcosecurity/falco-actions/stop@558a3ceeee9403e1c875ffbeb704c34c93e24752" # main(タグ未発行のため commit を固定)
+        with:
+          mode: "analyze"
+
+  # capture を解析して、ジョブ中の通信先 / DNS / プロセスをジョブサマリに出す。
+  # 収集が目的のため、検知があっても fail させない。
+  falco-analyze:
+    needs: ["check-ansible"]
+    if: "always()"
+    runs-on: "ubuntu-latest"
+    timeout-minutes: 15
+    # 計測が目的のジョブなので、capture が無い等で失敗しても CI をブロックしない
+    continue-on-error: true
+    permissions:
+      contents: "read"
+      actions: "read"
+
+    steps:
+      - name: "Analyze"
+        uses: "falcosecurity/falco-actions/analyze@558a3ceeee9403e1c875ffbeb704c34c93e24752" # main(タグ未発行のため commit を固定)
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
