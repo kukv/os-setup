@@ -25,7 +25,9 @@ homebrew:
     - "nmap"
     - "gnupg"
     - "mas"
-    - "cirruslabs/cli/tart"
+    # tart はここで管理しない: 配布元 formula が古い `depends_on :macos` 記法のままで、
+    # 現在の Homebrew は formula の読み込み自体を拒否する (cirruslabs/homebrew-cli#21)。
+    # 修正 PR (#16 / #18 / #20) が upstream にマージされるまでは手動で導入/更新する。
   casks:
     - "font-hack-nerd-font"
     - "google-chrome"
