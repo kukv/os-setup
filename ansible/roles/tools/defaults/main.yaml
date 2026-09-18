@@ -13,6 +13,10 @@ agents:
       repo: "vercel-labs/skills"
     - name: "ax"
       repo: "yusukebe/ax"
+    - name: "ast-grep"
+      repo: "ast-grep/agent-skill"
+    - name: "ast-grep-outline"
+      repo: "ast-grep/agent-skill"
 herdr:
   plugins:
     # id は herdr-plugin.toml の plugin_id（インストール先ディレクトリ名の判定に使用)
