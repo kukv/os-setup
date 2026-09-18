@@ -134,7 +134,7 @@ curl -sf https://raw.githubusercontent.com/kukv/os-setup/refs/heads/main/init.sh
 | --- | --- | --- |
 | `os_base` | apt 基盤、locale、NTP、DNS、シェル、Homebrew（共通）＋ `wsl.conf`/`wslu`/resolv.conf（WSL のみ、`is_wsl` 判定） | Homebrew 更新 |
 | `packages` | mise + chezmoi（brew）、Ruby ビルド依存、ARM toolchain | mise + chezmoi、brew formulae/casks、Claude Code CLI |
-| `tools` | chezmoi apply → mise install → go/corepack（共通） | 同じ共通オーケストレーション |
+| `tools` | chezmoi apply → corepack shim 無効化 → mise install → herdr プラグイン / Claude Code スキル（共通） | 同じ共通オーケストレーション |
 | `scheduler` | systemd timer (`os-setup.timer`) | launchd LaunchAgent (`com.kukv.os-setup`) |
 
 ```
