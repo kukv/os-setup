@@ -31,6 +31,19 @@
   register: "chezmoi_update"
   changed_when: "chezmoi_update.rc == 0"
 
+- name: "Disable Node corepack shims"
+  ansible.builtin.command:
+    # corepack の shim は node の bin 配下に置かれ、mise が [tools] で管理する
+    # pnpm / yarn を PATH 上で覆い隠す。その結果 mise の npm backend が意図しない
+    # pnpm を掴んで ERR_PNPM_NO_GLOBAL_BIN_DIR で失敗するため、shim は無効化して
+    # pnpm / yarn は mise に一本化する。
+    cmd: "{{ brew_bin_dir }}/mise exec node -- corepack disable"
+  args:
+    # shim が無ければ実行不要。node 未導入の初回実行もここでスキップされる。
+    removes: "{{ ansible_facts.user_dir }}/.local/share/mise/installs/node/*/bin/pnpm"
+  environment:
+    PATH: "{{ brew_bin_dir }}:{{ ansible_facts.env.PATH }}"
+
 - name: "Install mise tools"
   ansible.builtin.command:
     cmd: "{{ brew_bin_dir }}/mise install --yes"
@@ -64,10 +77,3 @@
   environment:
     PATH: "{{ brew_bin_dir }}:{{ ansible_facts.env.PATH }}"
   loop: "{{ agents.skills }}"
-
-- name: "Enable Node corepack"
-  ansible.builtin.command:
-    cmd: "{{ brew_bin_dir }}/mise exec node -- corepack enable"
-  environment:
-    PATH: "{{ brew_bin_dir }}:{{ ansible_facts.env.PATH }}"
-  changed_when: false
